@@ -1,1 +1,0 @@
-# Siddhant-Gandhi-ECS

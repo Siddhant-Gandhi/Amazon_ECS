@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "The template used to create an ECS Cluster from the ECS Console."
+Parameters:
+  ECSClusterName:
+    Type: String
+    Default: "sidcluster22"
+Resources:
+   MyPublicRepositry:
+    Type: AWS::ECR::PublicRepository
+    Properties:
+      RepositoryName: "siddhantrepo2"
+   ECSCluster:
+    Type: 'AWS::ECS::Cluster'
+    Properties:
+      ClusterName: !Ref ECSClusterName
+      CapacityProviders:
+        - FARGATE
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
+      Configuration:
+        ExecuteCommandConfiguration:
+          Logging: DEFAULT
+      

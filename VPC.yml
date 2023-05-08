@@ -220,3 +220,24 @@ Resources:
       RouteTableId: !Ref PrivateRouteTable
       SubnetId: !Ref PrivateSubnet3
 
+Outputs:
+  PublicSubnetIds1:
+    Description: Public Subnet01 in the VPC
+    Value: !Ref PublicSubnet1
+    Export:
+      Name: PublicSubnet1
+  PublicSubnetIds2:
+    Description: Public  Subnet02 in the VPC
+    Value: !Ref PublicSubnet2
+    Export:
+      Name: PublicSubnet2
+  PublicSubnetIds3:
+    Description: Public Subnet03 in the VPC
+    Value: !Ref PublicSubnet3
+    Export:
+      Name: PublicSubnet3   
+  VpcId:
+    Description: The VPC Id
+    Value: !Ref VPC
+    Export:
+      Name: VPC
