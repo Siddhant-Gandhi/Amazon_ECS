@@ -1,0 +1,27 @@
+
+[
+  {
+    "ParameterKey": "VPCName",
+    "ParameterValue": "Sid_vpc"
+  },
+  {
+    "ParameterKey": "VpcCIDR",
+    "ParameterValue": "10.192.0.0/16"
+  },
+  {
+    "ParameterKey": "PrivateSubnetCidrBlocks",
+    "ParameterValue": "10.192.20.0/24,10.192.21.0/24,10.192.22.0/24"
+  },
+  {
+    "ParameterKey": "PublicSubnetCidrBlocks",
+    "ParameterValue": "10.192.10.0/24,10.192.11.0/24,10.192.12.0/24"
+  },
+  {
+    "ParameterKey": "CreateIGW",
+    "ParameterValue": "true"
+  },
+  {
+    "ParameterKey": "CreateNatGW",
+    "ParameterValue": "true"
+  }
+]

@@ -1,0 +1,171 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: The template used to create an ECS Service from the ECS Console.
+Parameters:
+  ECSClusterName:
+    Type: String
+    
+  SecurityGroupName1:
+    Type: String
+
+  SecurityGroupName2:
+    Type: String
+    
+  ECSServiceName:
+    Type: String
+
+  FamilyName:
+    Type: String
+
+  ContainerCPU:
+    Type: Number
+
+  ContainerMemory:
+    Type: Number
+
+  ContainerName:
+    Type: String
+
+  ImageURI:
+    Type: String
+
+  TaskContainerPort:
+    Type: Number   
+  
+  TaskContainerProtocol:
+    Type: String  
+
+  AppLoadBalancerName:
+    Type: String
+    Description: Name of Application Load balancer.
+
+  AppLBTargetGroup:
+    Type: String
+
+  DesiredCount:
+    Type: Number
+    Description: The number of instantiations of the specified task definition to place and keep running on your cluster.
+  
+  LaunchType:
+    Type: String
+    Description: The launch type on which to run your service.
+    
+
+Resources:
+  TaskDefinition:
+    Type: 'AWS::ECS::TaskDefinition'
+    Properties:
+      Family: !Ref FamilyName
+      Cpu: !Ref ContainerCPU
+      Memory: !Ref ContainerMemory
+      NetworkMode: awsvpc
+      ContainerDefinitions:
+        - Name: !Ref ContainerName 
+          Image: !Ref ImageURI
+          PortMappings:
+            - ContainerPort: !Ref TaskContainerPort
+              Protocol: !Ref TaskContainerProtocol   
+      RequiresCompatibilities:
+        - FARGATE
+  ECSService:
+    Type: 'AWS::ECS::Service'
+    Properties:
+      Cluster: !Ref ECSClusterName
+      TaskDefinition: !Ref TaskDefinition
+      LaunchType: !Ref LaunchType
+      ServiceName: !Ref ECSServiceName
+      SchedulingStrategy: REPLICA
+      DesiredCount: !Ref DesiredCount
+      LoadBalancers:
+        - ContainerName: !Ref ContainerName 
+          ContainerPort: !Ref TaskContainerPort
+          LoadBalancerName: !Ref 'AWS::NoValue'
+          TargetGroupArn: !Ref TargetGroup
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+            - !Ref SecurityGroup1
+          Subnets:
+           - Fn::ImportValue: PublicSubnet1
+           - Fn::ImportValue: PublicSubnet2
+           - Fn::ImportValue: PublicSubnet3
+      PlatformVersion: LATEST
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+        DeploymentCircuitBreaker:
+          Enable: true
+          Rollback: true
+      DeploymentController:
+        Type: ECS
+      ServiceConnectConfiguration:
+        Enabled: false
+      Tags: []
+      EnableECSManagedTags: true
+    DependsOn:
+      - Listener
+  SecurityGroup1:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: This security group is getting used by Services task definition.
+      GroupName: !Ref SecurityGroupName1
+      VpcId:
+        Fn::ImportValue: VPC
+      SecurityGroupIngress:
+        - FromPort: -1
+          ToPort: -1
+          IpProtocol: '-1'
+          CidrIp: 0.0.0.0/0
+        - FromPort: -1
+          ToPort: -1
+          IpProtocol: '-1'
+          CidrIpv6: '::/0'
+  SecurityGroup2:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: This security group is getting used by application load balancer.
+      GroupName: !Ref SecurityGroupName2
+      VpcId:
+        Fn::ImportValue: VPC
+      SecurityGroupIngress:
+        - FromPort: -1
+          ToPort: -1
+          IpProtocol: '-1'
+          CidrIp: 0.0.0.0/0
+        - FromPort: -1
+          ToPort: -1
+          IpProtocol: '-1'
+          CidrIpv6: '::/0'        
+  LoadBalancer:
+    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Properties:
+      Type: application
+      Name: !Ref AppLoadBalancerName
+      SecurityGroups:
+        - !Ref SecurityGroup2
+      Subnets:
+        - Fn::ImportValue: PublicSubnet1
+        - Fn::ImportValue: PublicSubnet2
+        - Fn::ImportValue: PublicSubnet3
+  TargetGroup:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      HealthCheckPath: /
+      Name: !Ref AppLBTargetGroup
+      Port: 80
+      Protocol: HTTP
+      TargetType: ip
+      HealthCheckProtocol: HTTP
+      VpcId:
+        Fn::ImportValue: VPC
+  Listener:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+  
+

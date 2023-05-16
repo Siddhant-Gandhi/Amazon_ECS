@@ -1,0 +1,62 @@
+[
+    {
+        "ParameterKey": "ECSServiceName",
+        "ParameterValue": "sidservice"
+    },
+    {
+        "ParameterKey": "ECSClusterName",
+        "ParameterValue": "sidcluster"
+    },
+    {
+        "ParameterKey": "FamilyName",
+        "ParameterValue": "sid-task-definition"
+    },
+    {
+        "ParameterKey": "SecurityGroupName1",
+        "ParameterValue": "sidsgtask"
+    },
+    {
+        "ParameterKey": "SecurityGroupName2",
+        "ParameterValue": "sidsgalb"
+    },
+    {
+        "ParameterKey": "AppLoadBalancerName",
+        "ParameterValue": "sidlb"
+    },
+    {
+        "ParameterKey": "AppLBTargetGroup",
+        "ParameterValue": "sidtrgt"
+    },
+    {
+        "ParameterKey": "ContainerCPU",
+        "ParameterValue": "1024"
+    },
+    {
+        "ParameterKey": "ContainerMemory",
+        "ParameterValue": "3072"
+    },
+    {
+        "ParameterKey": "ContainerName",
+        "ParameterValue": "SidContainer"
+    },
+    {
+        "ParameterKey": "ImageURI",
+        "ParameterValue": "public.ecr.aws/v6d4w2e8/siddhantrepo:latest"
+    },
+    {
+        "ParameterKey": "TaskContainerPort",
+        "ParameterValue": "5000"
+    },
+    {
+        "ParameterKey": "LaunchType",
+        "ParameterValue": "FARGATE"
+    },
+    {
+        "ParameterKey": "DesiredCount",
+        "ParameterValue": "3"
+      },
+    {
+        "ParameterKey": "TaskContainerProtocol",
+        "ParameterValue": "TCP"
+    }
+]

@@ -1,0 +1,11 @@
+
+[
+    {
+      "ParameterKey": "ECRName",
+      "ParameterValue": "siddhantrepo"
+    },
+    {
+        "ParameterKey": "ECSClusterName",
+        "ParameterValue": "sidcluster"
+    }
+]
